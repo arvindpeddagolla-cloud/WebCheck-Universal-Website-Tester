@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WebCheck Test Suite — 15 Functional Scenarios</title>
+  <link rel="stylesheet" href="fixture.css">
+</head>
+<body>
+  <div class="test-container">
+    <header class="test-header">
+      <div class="badge-test">Test Suite</div>
+      <h1>WebCheck Verification Fixture</h1>
+      <p class="subtitle">Validates all 15 deterministic detection and interaction scenarios locally.</p>
+    </header>
+
+    <div class="grid-fixtures">
+      <!-- 1. Working Button -->
+      <section class="fixture-card" id="fixture1">
+        <div class="fixture-num">01</div>
+        <h3>Working Button</h3>
+        <p class="fixture-desc">Increments counter with observable DOM mutations.</p>
+        <div class="fixture-actions">
+          <button id="btnWorking" class="btn btn-primary">Click Me (Counter: <span id="counterVal">0</span>)</button>
+        </div>
+      </section>
+
+      <!-- 2. Button Throwing JS Exception -->
+      <section class="fixture-card" id="fixture2">
+        <div class="fixture-num">02</div>
+        <h3>Throws JavaScript Exception</h3>
+        <p class="fixture-desc">Triggers an uncaught runtime TypeError in handler.</p>
+        <div class="fixture-actions">
+          <button id="btnThrowError" class="btn btn-warning">Trigger Uncaught Error</button>
+        </div>
+      </section>
+
+      <!-- 3. Button With No Observable Result -->
+      <section class="fixture-card" id="fixture3">
+        <div class="fixture-num">03</div>
+        <h3>No Observable Result</h3>
+        <p class="fixture-desc">Executes empty callback without mutating DOM or URL.</p>
+        <div class="fixture-actions">
+          <button id="btnNoOp" class="btn btn-secondary">No-Op Action</button>
+        </div>
+      </section>
+
+      <!-- 4. Modal-Opening Button -->
+      <section class="fixture-card" id="fixture4">
+        <div class="fixture-num">04</div>
+        <h3>Modal / Dialog Toggle</h3>
+        <p class="fixture-desc">Opens an accessible dialog with focus management.</p>
+        <div class="fixture-actions">
+          <button id="btnOpenModal" class="btn btn-primary" aria-haspopup="dialog">Open Diagnostic Dialog</button>
+        </div>
+      </section>
+
+      <!-- 5. Working Internal Link -->
+      <section class="fixture-card" id="fixture5">
+        <div class="fixture-num">05</div>
+        <h3>Working Internal Route</h3>
+        <p class="fixture-desc">Navigates to an existing page section anchor.</p>
+        <div class="fixture-actions">
+          <a href="#fixture1" id="linkWorking" class="link-target">Jump to Fixture 01 (Working)</a>
+        </div>
+      </section>
+
+      <!-- 6. Missing Internal Route (404) -->
+      <section class="fixture-card" id="fixture6">
+        <div class="fixture-num">06</div>
+        <h3>Missing Route (404 Error)</h3>
+        <p class="fixture-desc">Destination returns HTTP 404 Not Found error.</p>
+        <div class="fixture-actions">
+          <a href="/missing-page-404-broken" id="linkMissing" class="link-target">Broken Route (/missing-page-404)</a>
+        </div>
+      </section>
+
+      <!-- 7. Broken Image Asset -->
+      <section class="fixture-card" id="fixture7">
+        <div class="fixture-num">07</div>
+        <h3>Broken Image Asset</h3>
+        <p class="fixture-desc">Image references non-existent URL (naturalWidth = 0).</p>
+        <div class="fixture-actions">
+          <img src="non-existent-broken-image-file.png" alt="Broken Test Placeholder" id="imgBroken" width="120" height="40" class="img-preview">
+        </div>
+      </section>
+
+      <!-- 8. Form with Required Fields -->
+      <section class="fixture-card" id="fixture8">
+        <div class="fixture-num">08</div>
+        <h3>Form with Required Fields</h3>
+        <p class="fixture-desc">Standard form with required text input and labels.</p>
+        <form id="formRequired" class="test-form" onsubmit="event.preventDefault();">
+          <div class="form-row">
+            <label for="inputUsername">Username (Required):</label>
+            <input type="text" id="inputUsername" name="username" required placeholder="e.g. devuser">
+          </div>
+          <button type="submit" class="btn btn-secondary">Submit Form</button>
+        </form>
+      </section>
+
+      <!-- 9. Invalid Form Input -->
+      <section class="fixture-card" id="fixture9">
+        <div class="fixture-num">09</div>
+        <h3>Invalid Form Constraint</h3>
+        <p class="fixture-desc">Input pre-filled with invalid email string violating type="email".</p>
+        <div class="form-row">
+          <label for="inputEmailInvalid">Contact Email:</label>
+          <input type="email" id="inputEmailInvalid" value="invalid-email-format-missing-at" class="input-invalid">
+        </div>
+      </section>
+
+      <!-- 10. Simulated Failed API Request -->
+      <section class="fixture-card" id="fixture10">
+        <div class="fixture-num">10</div>
+        <h3>Simulated Failed API (500)</h3>
+        <p class="fixture-desc">Triggers fetch() to endpoint returning HTTP 500 status.</p>
+        <div class="fixture-actions">
+          <button id="btnFetchFail" class="btn btn-warning">Fetch /api/broken-endpoint</button>
+          <span id="fetchStatusText" class="status-msg"></span>
+        </div>
+      </section>
+
+      <!-- 11. Delayed Response -->
+      <section class="fixture-card" id="fixture11">
+        <div class="fixture-num">11</div>
+        <h3>Delayed Async Response</h3>
+        <p class="fixture-desc">Displays a loading spinner for 1.2s then completes.</p>
+        <div class="fixture-actions">
+          <button id="btnDelayed" class="btn btn-secondary">Start Async Operation</button>
+          <span id="spinnerElement" class="spinner" style="display: none;"></span>
+        </div>
+      </section>
+
+      <!-- 12. Dynamically Rendered Element -->
+      <section class="fixture-card" id="fixture12">
+        <div class="fixture-num">12</div>
+        <h3>Dynamically Rendered Element</h3>
+        <p class="fixture-desc">Appends a new interactive element to the DOM tree.</p>
+        <div class="fixture-actions">
+          <button id="btnRenderDynamic" class="btn btn-primary">Inject Dynamic Control</button>
+          <div id="dynamicContainer"></div>
+        </div>
+      </section>
+
+      <!-- 13. Single-Page App Route Change -->
+      <section class="fixture-card" id="fixture13">
+        <div class="fixture-num">13</div>
+        <h3>SPA Route Navigation</h3>
+        <p class="fixture-desc">Updates window.location.hash without page reload.</p>
+        <div class="fixture-actions">
+          <button id="btnSpaNav" class="btn btn-secondary">Navigate to #/view/dashboard</button>
+        </div>
+      </section>
+
+      <!-- 14. Disabled Control -->
+      <section class="fixture-card" id="fixture14">
+        <div class="fixture-num">14</div>
+        <h3>Disabled Control</h3>
+        <p class="fixture-desc">HTML disabled attribute prevents user interaction.</p>
+        <div class="fixture-actions">
+          <button id="btnDisabled" class="btn btn-disabled" disabled aria-disabled="true">Disabled Action</button>
+        </div>
+      </section>
+
+      <!-- 15. Unsafe Consequential Action -->
+      <section class="fixture-card" id="fixture15">
+        <div class="fixture-num">15</div>
+        <h3>Consequential Action Guard</h3>
+        <p class="fixture-desc">Matches sensitive keywords; automatic activation blocked.</p>
+        <div class="fixture-actions">
+          <button id="btnDeleteAccount" class="btn btn-danger">Delete User Account</button>
+          <button id="btnCheckoutPay" class="btn btn-danger" style="margin-left: 6px;">Confirm Payment ($99.00)</button>
+        </div>
+      </section>
+    </div>
+
+    <!-- Modal Element for Scenario 04 -->
+    <dialog id="testModal" class="test-dialog" aria-labelledby="modalTitle">
+      <div class="dialog-content">
+        <h2 id="modalTitle">Diagnostic Test Modal</h2>
+        <p>This modal was opened via an interactive test button. DOM mutations were observed.</p>
+        <button id="btnCloseModal" class="btn btn-secondary">Close Dialog</button>
+      </div>
+    </dialog>
+  </div>
+
+  <script src="fixture.js"></script>
+</body>
+</html>

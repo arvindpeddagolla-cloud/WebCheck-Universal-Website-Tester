@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WebCheck — Universal Website Tester</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="popup-container">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="header-brand">
+        <img src="icons/icon32.png" alt="WebCheck Logo" class="brand-logo" width="24" height="24">
+        <div>
+          <h1 class="brand-title">WebCheck <span class="brand-version">v1.0</span></h1>
+          <p class="brand-subtitle">Universal Website Tester</p>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button id="btnOpenDashboard" class="icon-btn" title="Open Full Dashboard">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+            <polyline points="15 3 21 3 21 9"></polyline>
+            <line x1="10" y1="14" x2="21" y2="3"></line>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Target Site Info Banner -->
+    <section class="target-card" id="targetCard">
+      <div class="target-meta">
+        <span class="status-indicator live" id="targetStatusDot"></span>
+        <span class="target-host" id="targetHost">Loading page...</span>
+      </div>
+      <div class="target-url" id="targetUrl" title="">Detecting active tab...</div>
+    </section>
+
+    <!-- Error / Restriction Notice Banner (hidden by default) -->
+    <div class="alert-banner" id="restrictedNotice" style="display: none;">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2">
+        <circle cx="12" cy="12" r="10"></circle>
+        <line x1="12" y1="8" x2="12" y2="12"></line>
+        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+      </svg>
+      <div class="alert-text" id="restrictedMessage">
+        WebCheck cannot inspect Chrome internal URLs (<code>chrome://</code>). Please test on a local server (e.g. <code>localhost:3000</code>) or public website.
+      </div>
+    </div>
+
+    <!-- Scan Mode Selector -->
+    <section class="mode-section" id="modeSection">
+      <div class="section-label">Testing Mode</div>
+      <div class="mode-options">
+        <label class="mode-card active" id="modeCardSafe">
+          <input type="radio" name="scanMode" value="safe_scan" checked>
+          <div class="mode-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+            </svg>
+          </div>
+          <div class="mode-details">
+            <div class="mode-title">Safe Scan <span class="badge-recommended">Default</span></div>
+            <div class="mode-desc">Non-destructive passive DOM, link, form, image & error analysis.</div>
+          </div>
+        </label>
+
+        <label class="mode-card" id="modeCardInteractive">
+          <input type="radio" name="scanMode" value="interactive_test">
+          <div class="mode-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2">
+              <polygon points="5 3 19 12 5 21 5 3"></polygon>
+            </svg>
+          </div>
+          <div class="mode-details">
+            <div class="mode-title">Interactive Test</div>
+            <div class="mode-desc">Actively triggers controls with mutation tracking and safety guards.</div>
+          </div>
+        </label>
+      </div>
+    </section>
+
+    <!-- Scan Action Control -->
+    <div class="action-section">
+      <button id="btnScanWebsite" class="primary-btn" disabled style="opacity: 0.5;">
+        <svg id="scanBtnIcon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <span id="scanBtnText">Scan Website</span>
+      </button>
+    </div>
+
+    <!-- Scanning Progress Indicator -->
+    <div class="progress-container" id="progressContainer" style="display: none;">
+      <div class="progress-bar-bg">
+        <div class="progress-bar-fill" id="progressBarFill"></div>
+      </div>
+      <div class="progress-status" id="progressStatusText">Inspecting DOM nodes...</div>
+    </div>
+
+    <!-- Quick Results Preview Section -->
+    <section class="results-preview" id="resultsPreview" style="display: none;">
+      <div class="preview-header">
+        <span class="preview-title">Diagnostic Summary</span>
+        <span class="scan-timestamp" id="scanTimestamp">Just now</span>
+      </div>
+
+      <div class="metrics-grid">
+        <div class="metric-card metric-danger">
+          <div class="metric-value" id="countIssues">0</div>
+          <div class="metric-label">Issues</div>
+        </div>
+        <div class="metric-card metric-warning">
+          <div class="metric-value" id="countNeedsReview">0</div>
+          <div class="metric-label">Needs Review</div>
+        </div>
+        <div class="metric-card metric-success">
+          <div class="metric-value" id="countPassed">0</div>
+          <div class="metric-label">Passed</div>
+        </div>
+        <div class="metric-card metric-info">
+          <div class="metric-value" id="countDiscovered">0</div>
+          <div class="metric-label">Elements</div>
+        </div>
+      </div>
+
+      <div class="checks-summary-row" id="checksCountRow">
+        Checks performed: <strong id="countChecks">0</strong>
+      </div>
+
+      <button id="btnViewFullReport" class="secondary-btn">
+        <span>View Full Detailed Report</span>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="9 18 15 12 9 6"></polyline>
+        </svg>
+      </button>
+    </section>
+
+    <!-- Empty State -->
+    <div class="empty-state" id="emptyState">
+      <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#475569" stroke-width="1.5">
+        <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+        <line x1="8" y1="21" x2="16" y2="21"></line>
+        <line x1="12" y1="17" x2="12" y2="21"></line>
+      </svg>
+      <div class="empty-title">Ready to Inspect</div>
+      <p class="empty-desc">Click "Scan Website" to dynamically test DOM elements, links, forms, images, and runtime errors.</p>
+    </div>
+
+    <!-- Footer -->
+    <footer class="app-footer">
+      <span>100% Local & Privacy-Conscious</span>
+      <span class="footer-dot">•</span>
+      <a href="#" id="linkClearData">Clear Cache</a>
+    </footer>
+  </div>
+
+  <script src="storage.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>
